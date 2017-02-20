@@ -2918,11 +2918,12 @@ value image_and_size conf base p image_size =
         in
         let http = "http://" in
         let https = "https://" in
+        let replace input output = Str.global_replace (Str.regexp_string input) output in
         if (String.length s > String.length http &&
             String.sub s 0 (String.length http) = http) ||
            (String.length s > String.length https &&
             String.sub s 0 (String.length https) = https) then
-          Some (False, s, size)
+          Some (False, replace "http://" "https://" s, size)
         else if Filename.is_implicit s then
           match
             try Some (List.assoc "images_path" conf.base_env) with

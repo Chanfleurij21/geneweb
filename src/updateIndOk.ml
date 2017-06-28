@@ -992,7 +992,7 @@ value effective_mod conf base sp = do {
   check_sex_married conf base sp op;
   let created_p = ref [] in
   let np =
-    map_person_ps (Update.insert_person conf base sp.psources created_p)
+    map_person_ps (Update.insert_person conf base "" created_p)
       (Gwdb.insert_string base) sp
   in
   let op_misc_names = person_misc_names base op get_titles in

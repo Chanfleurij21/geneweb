@@ -4956,8 +4956,7 @@ value print_foreach conf base print_ast eval_expr =
                 List.iter (print_ast env ini_ep) al;
                 loop (Some vfam) (i + 1);
               }
-        else ();
-
+        else
         (* On ajoute les familles distantes. *)
         let faml = Perso_link.get_family_link conf.command (get_key_index p) in
         loop None 0 faml where rec loop prev i faml =

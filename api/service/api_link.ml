@@ -859,6 +859,14 @@ let print_link_tree conf base =
           begin
             Hashtbl.add ht_request ip ();
             let links = get_links conf base redis ip include_not_validated in
+            (* Si personne a un pont et mariée, alors ne pas descendre... *)
+            let bl = get_bridges conf base redis ip include_not_validated in
+            if ip <> ip_local &&
+               Array.length (get_family (poi base ip)) > 0 &&
+               bl <> []
+            then
+              (accu_fam, accu_pers, accu_conn)
+            else
             List.fold_left
               (fun (accu_fam, accu_pers, accu_conn) s ->
                 List.fold_left

@@ -178,6 +178,7 @@ value default_source = ref "";
 value relation_status = ref Married;
 value no_picture = ref False;
 value do_check = ref True;
+value trackid = ref False;
 
 (* Reading input *)
 
@@ -2562,6 +2563,11 @@ value add_indi gen r =
   let union = union_of_gen_union {family = Array.of_list family} in
   do {
     gen.g_per.arr.(Adef.int_of_iper ip) := Right3 person ascend union;
+    if trackid.val then
+      Printf.printf "GEDID: %s, GWID: %d, N: %s, P: %s, OCC: %d\n"
+        (extract_addr r.rval) (Adef.int_of_iper ip)
+        (Name.lower surname) (Name.lower first_name) occ
+    else ();
     match find_field "ADOP" r.rsons with
     [ Some r ->
         match find_field "FAMC" r.rsons with
@@ -4016,6 +4022,8 @@ x-y   - Undefined death interval -
     "\n       Interpret months-numbered dates as month/day/year");
    ("-rs_no_mention", Arg.Unit (fun () -> relation_status.val := NoMention),
     "\n       Force relation status to NoMention (default is Married)");
+   ("-trackgedid", Arg.Set trackid,
+    "\n       Print ged id, gw id, n, p, occ");
    ("-charset",
     Arg.String
       (fun

@@ -718,7 +718,7 @@ value print_mod_view_page conf can_edit mode fname title env s = do {
   if can_edit && has_v then
     print_sub_part_links conf (mode_pref ^ mode) sfn v is_empty
   else ();
-  tag "form" "method=\"post\" action=\"%s\"" conf.command begin
+  tag "form" "name=\"form_notes\"" "method=\"post\" action=\"%s\"" conf.command begin
     tag "p" begin
       Util.hidden_env conf;
       if can_edit then

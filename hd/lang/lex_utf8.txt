@@ -7891,6 +7891,66 @@ sk: spojenie dokončené
 sl: združitev končana
 sv: sammanslagning klar
 
+    merge_choose
+de: oder wählen Sie eine duplizierte Person aus:
+en: or select a duplicate individual:
+es: o seleccione un individuo duplicado:
+fi: tai valitse kaksoiskappale henkilöstä:
+fr: ou un individu à sélectionner :
+it: oppure seleziona un individuo doppione:
+nl: of selecteer een dubbel persoon :
+no: eller velg et duplikat-individ:
+pt: ou selecione uma pessoa duplicada:
+sv: Ange eller välj en dubblerad individ:
+
+    merge_enter
+de: erfassen:
+en: enter:
+es: introduzca:
+fi: jatka:
+fr: saisissez :
+it: introdurre:
+nl: vul in :
+no: enter:
+pt: introduzir:
+sv: ange:
+
+    merge_expl
+de: Wählen Sie unten eine duplizierte Person aus, die Sie mit der aktuellen Person zusammenführen möchten. Sie können dann die gewünschten Informationen auswählen (Termine und Orte von Ereignissen, Lebensgemeinschaften, Notizen usw.), die bei der Fusion erhalten bleiben sollen.
+en: Select below a duplicate individual to be merged with the current individual. You will then be able to select the information (date and place of events, marriages, notes, etc.) you want to save when merging the individuals.
+es: Seleccione más abajo al individuo duplicado para fusionarlo con el otro. Luego, puede seleccionar las informaciones (fechas y lugares de eventos, uniones, notas, etc.) que quiera conservar cuando haya hecho la fusión.
+fi: Valitkaa alta kaksoiskappale henkilöstä, joka halutaan liittää ajankohtaisena olevaan henkilöön. Tämän jälkeen voit valita tiedon ( tapahtumien, vihkimisen ja muistiinpanojen päiväyksen ja  paikan jne.), jotka haluat tallentaa liittäessäsi henkiköitä.
+fr: Sélectionnez ci-dessous un individu doublon pour le fusionner avec l'individu de départ. Vous pourrez ensuite choisir quelles informations (dates et lieux des événements, unions, notes, etc.) vous souhaitez conserver pour l'individu final.
+it: Qui sotto puoi selezionare un individuo doppione per fonderlo con l'individuo corrente. Potrai in seguito scegliere le informazioni (date e luoghi degli eventi, unioni, annotazioni ecc.) che desideri conservare con la fusione.
+nl: Selecteer hieronder een dubbele persoon om die samen te voegen.  Daarna kan u de informatie (data, plaatsen, evenementen, nota's, enz...) die u wenst te behouden bij de fusie selecteren.
+no: Velg nedenfor et duplikat-individ som skal slås sammen med det eksisterende individ. Du vil da kunne velge opplysningene (dato og sted for hendelser, ekteskap, merknader, etc.) du ønsker å bevare ved sammenslåingen.
+pt: Selecione abaixo uma pessoa duplicada, que irá ser fundida com a pessoa atual. Irá depois ter a possibilidade de selecionar a informação (data e local dos acontecimentos, casamentos, notas, etc.) que pretende gravar quando fundir as pessoas.
+sv: Välj nedan en dubblerad person att sammanfoga med nuvarande person. Du kommer att ha möjlighet att välja information (daton och plats för händelser, äktenskap, noteringar etc) som Du vill spara r Du slår samman individerna.
+
+    merge_search
+de: Eine doppelt vorhandene Person suchen:
+en: search a duplicate individual:
+es: buscar un individuo duplicado:
+fi: etsi henkilön kaksoiskappale:
+fr: un doublon à chercher :
+it: ricercare un individuo doppione:
+nl: een dubbele persoon zoeken :
+no: søk etter et duplikat-individ:
+pt: selecione uma pessoa duplicada:
+sv: Sök en dubblerad individ:
+
+    merge_validate
+de: zusammenführen
+en: merge
+es: fusionar
+fi: liitä
+fr: lancer la fusion
+it: fondere
+nl: samenvoegen
+no: slå sammen
+pt: fundir
+sv: Sammanfoga
+
     message added
 af: boodskap bygevoeg
 bg: съобщението добавено

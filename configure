@@ -166,7 +166,7 @@ check_os() {
   OS_TYPE=`uname -s`
   if [[ $OS_TYPE == "Darwin" ]] || [[ $OS_TYPE == "Linux" ]] ; then
     print_check_ok "Checking OS type" "UNIX"
-    CAMLP5F+=" -D UNIX"
+    # CAMLP5F+=" -D UNIX"
     EXE=
     RM="/bin/rm -f"
     STRIP=strip
@@ -286,7 +286,7 @@ check_ocamlfind() {
   if $TRY_OCAMLFIND && ocamlfind printconf >/dev/null 2>&1; then
     print_check_ok "Checking ocamlfind" "FOUND"
     OCAMLFIND=true
-    OCAMLFLAGS+=" -linkpkg"
+    # OCAMLFLAGS+=" -linkpkg"
   elif $API; then
     print_check_err "Checking ocamlfind" \
         "You need the command ocamlfind accessible in the path!"
@@ -505,13 +505,3 @@ fi
 check_environment
 # Print Makefile
 print_makefile
-
-# Temporary.
-if [[ $OS_TYPE == "Darwin" ]]; then
-  if $CI_BREW; then
-    brew install bash
-  fi
-  cp tools/transitive_depend_osx.sh tools/transitive_depend.sh
-else
-  cp tools/transitive_depend_linux.sh tools/transitive_depend.sh
-fi

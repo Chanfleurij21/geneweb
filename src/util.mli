@@ -1,303 +1,297 @@
 (* $Id: util.mli,v 5.36 2007-07-26 01:57:42 ddr Exp $ *)
 (* Copyright (c) 1998-2007 INRIA *)
 
-open Config;
-open Def;
-open Gwdb;
+open Config
+open Def
+open Gwdb
 
-value add_lang_path : string -> unit;
-value set_base_dir : string -> unit;
-value cnt_dir : ref string;
-value image_prefix : config -> string;
-value base_path : list string -> string -> string;
+val add_lang_path : string -> unit
+val set_base_dir : string -> unit
+val cnt_dir : string ref
+val image_prefix : config -> string
+val base_path : string list -> string -> string
 
-value find_misc_file : string -> string;
+val find_misc_file : string -> string
 
-value search_in_lang_path : string -> string;
+val search_in_lang_path : string -> string
 
-value etc_file_name : config -> string -> string;
+val etc_file_name : config -> string -> string
 
-value escache_value : base -> string;
-value commit_patches : config -> base -> unit;
-value update_wf_trace : config -> string -> unit;
+val escache_value : base -> string
+val commit_patches : config -> base -> unit
+val update_wf_trace : config -> string -> unit
 
-value get_referer : config -> string;
+val get_referer : config -> string
 
-value no_html_tags : string -> string;
-value clean_html_tags : string -> list string -> string;
-value sanitize_html : string -> string;
+val no_html_tags : string -> string
+val clean_html_tags : string -> string list -> string
+val sanitize_html : string -> string
 
-value nl : unit -> unit;
-value html : ?content_type:string -> config -> unit;
-value html_br : config -> unit;
-value html_p : config -> unit;
-value html_li : config -> unit;
-value unauthorized : config -> string -> unit;
-value string_of_ctime : config -> string;
+val nl : unit -> unit
+val html : ?content_type:string -> config -> unit
+val html_br : config -> unit
+val html_p : config -> unit
+val html_li : config -> unit
+val unauthorized : config -> string -> unit
+val string_of_ctime : config -> string
 
-value commd : config -> string;
-value prefix_base : config -> string;
-value code_varenv : string -> string;
-value decode_varenv : string -> string;
-value hidden_env : config -> unit;
+val commd : config -> string
+val prefix_base : config -> string
+val code_varenv : string -> string
+val decode_varenv : string -> string
+val hidden_env : config -> unit
 
-value nobtit : config -> base -> person -> list title;
+val nobtit : config -> base -> person -> title list
 
-value strictly_after_private_years : config -> dmy -> bool;
-value authorized_age : config -> base -> person -> bool;
-value is_old_person : config -> gen_person iper istr -> bool;
-value fast_auth_age : config -> person -> bool;
+val strictly_after_private_years : config -> dmy -> bool
+val authorized_age : config -> base -> person -> bool
+val is_old_person : config -> (iper, istr) gen_person -> bool
+val fast_auth_age : config -> person -> bool
 
-value start_with_vowel : string -> bool;
-value know : base -> person -> bool;
-value acces_n : config -> base -> string -> person -> string;
-value acces : config -> base -> person -> string;
-value wprint_hidden_person : config -> base -> string -> person -> unit;
-value accessible_by_key : config -> base -> person -> string -> string -> bool;
+val start_with_vowel : string -> bool
+val know : base -> person -> bool
+val acces_n : config -> base -> string -> person -> string
+val acces : config -> base -> person -> string
+val wprint_hidden_person : config -> base -> string -> person -> unit
+val accessible_by_key : config -> base -> person -> string -> string -> bool
 
-value geneweb_link : config -> string -> string -> string;
-value wprint_geneweb_link : config -> string -> string -> unit;
+val geneweb_link : config -> string -> string -> string
+val wprint_geneweb_link : config -> string -> string -> unit
 
-value is_restricted : config -> base -> iper -> bool;
-value is_hidden : person -> bool;
+val is_restricted : config -> base -> iper -> bool
+val is_hidden : person -> bool
 
-value pget : config -> base -> iper -> person;
-value string_gen_person :
-  base -> gen_person iper istr -> gen_person iper string
-;
-value string_gen_family :
-  base -> gen_family iper istr -> gen_family iper string
-;
+val pget : config -> base -> iper -> person
+val string_gen_person :
+  base -> (iper, istr) gen_person -> (iper, string) gen_person
+val string_gen_family :
+  base -> (iper, istr) gen_family -> (iper, string) gen_family
 
-type p_access = (base -> person -> string * base -> person -> string);
-value std_access : p_access;
-value raw_access : p_access;
+type p_access = (base -> person -> string) * (base -> person -> string)
+val std_access : p_access
+val raw_access : p_access
 
 (* Fonctions d'écriture du nom et prénom d'un individu en fonction de : *)
 (*   - son/ses titre de noblesse                                        *)
 (*   - son/ses nom public                                               *)
 (*   - son/ses sobriquets ...                                           *)
-value gen_person_text : p_access -> config -> base -> person -> string;
-value gen_person_text_no_html : p_access -> config -> base -> person -> string;
-value gen_person_text_without_title :
+val gen_person_text : p_access -> config -> base -> person -> string
+val gen_person_text_no_html : p_access -> config -> base -> person -> string
+val gen_person_text_without_title :
   p_access -> config -> base -> person -> string
-;
-value gen_person_title_text :
-  (config -> base -> person -> string -> string) ->
-    p_access -> config -> base -> person -> string
-;
-value person_text : config -> base -> person -> string;
-value person_text_no_html : config -> base -> person -> string;
-value person_text_without_surname : config -> base -> person -> string;
-value person_text_no_surn_no_acc_chk : config -> base -> person -> string;
-value person_text_without_title : config -> base -> person -> string;
-value main_title : config -> base -> person -> option title;
-value titled_person_text : config -> base -> person -> title -> string;
-value one_title_text : config -> base -> person -> title -> string;
-value person_title_text : config -> base -> person -> string;
-value person_title : config -> base -> person -> string;
+val gen_person_title_text :
+  (config -> base -> person -> string -> string) -> p_access -> config ->
+    base -> person -> string
+val person_text : config -> base -> person -> string
+val person_text_no_html : config -> base -> person -> string
+val person_text_without_surname : config -> base -> person -> string
+val person_text_no_surn_no_acc_chk : config -> base -> person -> string
+val person_text_without_title : config -> base -> person -> string
+val main_title : config -> base -> person -> title option
+val titled_person_text : config -> base -> person -> title -> string
+val one_title_text : config -> base -> person -> title -> string
+val person_title_text : config -> base -> person -> string
+val person_title : config -> base -> person -> string
 
-value child_of_parent : config -> base -> person -> string;
+val child_of_parent : config -> base -> person -> string
 
-value reference : config -> base -> person -> string -> string;
-value no_reference : config -> base -> person -> string -> string;
-value referenced_person_title_text : config -> base -> person -> string;
-value referenced_person_text : config -> base -> person -> string;
-value referenced_person_text_without_surname :
-  config -> base -> person -> string;
+val reference : config -> base -> person -> string -> string
+val no_reference : config -> base -> person -> string -> string
+val referenced_person_title_text : config -> base -> person -> string
+val referenced_person_text : config -> base -> person -> string
+val referenced_person_text_without_surname :
+  config -> base -> person -> string
 
-value update_family_loop : config -> base -> person -> string -> string;
+val update_family_loop : config -> base -> person -> string -> string
 
-value p_getenv : list (string * string) -> string -> option string;
-value p_getint : list (string * string) -> string -> option int;
-value create_env : string -> list (string * string);
-value capitale : string -> string;
-value index_of_next_char : string -> int -> int;
+val p_getenv : (string * string) list -> string -> string option
+val p_getint : (string * string) list -> string -> int option
+val create_env : string -> (string * string) list
+val capitale : string -> string
+val index_of_next_char : string -> int -> int
 
-value open_etc_file : string -> option in_channel;
-value open_hed_trl : config -> string -> option in_channel;
-value open_templ : config -> string -> option in_channel;
-value string_with_macros :
-  config -> list (char * unit -> string) -> string -> string;
-value string_of_place : config -> string -> string;
-value place_of_string : config -> string -> option place;
-value filter_html_tags : string -> string;
-value allowed_tags_file : ref string;
-value body_prop : config -> string;
-value url_no_index : config -> base -> string;
-value message_to_wizard : config -> unit;
-value check_xhtml : string -> string;
+val open_etc_file : string -> in_channel option
+val open_hed_trl : config -> string -> in_channel option
+val open_templ : config -> string -> in_channel option
+val string_with_macros :
+  config -> (char * (unit -> string)) list -> string -> string
+val string_of_place : config -> string -> string
+val place_of_string : config -> string -> place option
+val filter_html_tags : string -> string
+val allowed_tags_file : string ref
+val body_prop : config -> string
+val url_no_index : config -> base -> string
+val message_to_wizard : config -> unit
+val check_xhtml : string -> string
 
-value print_alphab_list :
-  config -> ('a -> string) -> ('a -> unit) -> list 'a -> unit;
-value of_course_died : config -> person -> bool;
-value hexa_string : string -> string;
+val print_alphab_list :
+  config -> ('a -> string) -> ('a -> unit) -> 'a list -> unit
+val of_course_died : config -> person -> bool
+val hexa_string : string -> string
 
-value surname_begin : base -> string -> string;
-value surname_end : base -> string -> string;
-value get_particle : base -> string -> string;
-value old_surname_begin : string -> string;
-value old_surname_end : string -> string;
+val surname_begin : base -> string -> string
+val surname_end : base -> string -> string
+val get_particle : base -> string -> string
+val old_surname_begin : string -> string
+val old_surname_end : string -> string
 
-value specify_homonymous : config -> base -> person -> bool -> unit;
+val specify_homonymous : config -> base -> person -> bool -> unit
 
-value get_approx_birth_date_place :
-  config -> base -> person -> (option date * string);
-value get_approx_death_date_place :
-  config -> base -> person -> (option date * string);
+val get_approx_birth_date_place :
+  config -> base -> person -> date option * string
+val get_approx_death_date_place :
+  config -> base -> person -> date option * string
 
-type format2 'a 'b = format4 'a unit string 'b;
+type ('a, 'b) format2 = ('a, unit, string, 'b) format4
 
-value check_format : format2 'a 'b -> string -> option (format2 'a 'b);
-value valid_format : format2 'a 'b -> string -> format2 'a 'b;
+val check_format : ('a, 'b) format2 -> string -> ('a, 'b) format2 option
+val valid_format : ('a, 'b) format2 -> string -> ('a, 'b) format2
 
-value transl : config -> string -> string;
-value transl_nth : config -> string -> int -> string;
-value transl_decline : config -> string -> string -> string;
-value transl_a_of_b : config -> string -> string -> string;
-value transl_a_of_gr_eq_gen_lev : config -> string -> string -> string;
-value ftransl : config -> format2 'a 'b -> format2 'a 'b;
-value ftransl_nth : config -> format2 'a 'b -> int -> format2 'a 'b;
-value fdecline : config -> format2 'a 'b -> string -> format2 'a 'b;
-value fcapitale : format2 'a 'b -> format2 'a 'b;
-value nth_field : string -> int -> string;
+val transl : config -> string -> string
+val transl_nth : config -> string -> int -> string
+val transl_decline : config -> string -> string -> string
+val transl_a_of_b : config -> string -> string -> string
+val transl_a_of_gr_eq_gen_lev : config -> string -> string -> string
+val ftransl : config -> ('a, 'b) format2 -> ('a, 'b) format2
+val ftransl_nth : config -> ('a, 'b) format2 -> int -> ('a, 'b) format2
+val fdecline : config -> ('a, 'b) format2 -> string -> ('a, 'b) format2
+val fcapitale : ('a, 'b) format2 -> ('a, 'b) format2
+val nth_field : string -> int -> string
 
-value cftransl : config -> string -> list string -> string;
-value translate_eval : string -> string;
+val cftransl : config -> string -> string list -> string
+val translate_eval : string -> string
 
-value std_color : config -> string -> string;
+val std_color : config -> string -> string
 
-value index_of_sex : sex -> int;
+val index_of_sex : sex -> int
 
-value string_of_pevent_name :
-  config -> base -> gen_pers_event_name istr -> string;
-value string_of_fevent_name :
-  config -> base -> gen_fam_event_name istr -> string;
-value string_of_witness_kind : config -> person -> witness_kind -> string;
+val string_of_pevent_name :
+  config -> base -> istr gen_pers_event_name -> string
+val string_of_fevent_name :
+  config -> base -> istr gen_fam_event_name -> string
+val string_of_witness_kind : config -> person -> witness_kind -> string
 
-value relation_txt :
-  config -> sex -> family -> format (('a -> 'b) -> 'b) 'a 'b;
+val relation_txt :
+  config -> sex -> family -> (('a -> 'b) -> 'b, 'a, 'b) format
 
-value string_of_decimal_num : config -> float -> string;
+val string_of_decimal_num : config -> float -> string
 
-value person_exists : config -> base -> (string * string * int) -> bool;
+val person_exists : config -> base -> string * string * int -> bool
 
-value find_person_in_env : config -> base -> string -> option person;
+val find_person_in_env : config -> base -> string -> person option
 (* Recherche le sosa uniquement dans le fichier gwf *)
-value default_sosa_ref : config -> base -> option person;
-value find_sosa_ref : config -> base -> option person;
-value update_gwf_sosa :
-  config -> base -> (iper * (string * string * int)) -> unit;
+val default_sosa_ref : config -> base -> person option
+val find_sosa_ref : config -> base -> person option
+val update_gwf_sosa : config -> base -> iper * (string * string * int) -> unit
 
-value quote_escaped : string -> string;
+val quote_escaped : string -> string
 
-value get_server_string : list string -> string;
-value get_request_string : list string -> string;
+val get_server_string : string list -> string
+val get_request_string : string list -> string
 
-value create_topological_sort : config -> base -> array int;
+val create_topological_sort : config -> base -> int array
 
-value branch_of_sosa :
-  config -> base -> iper -> Sosa.t -> option (list (iper * sex));
-value sosa_of_branch : list (iper * sex) -> Sosa.t;
+val branch_of_sosa :
+  config -> base -> iper -> Sosa.t -> (iper * sex) list option
+val sosa_of_branch : (iper * sex) list -> Sosa.t
 
-value has_image : config -> base -> person -> bool;
-value image_file_name : string -> string;
-value source_image_file_name : string -> string -> string;
+val has_image : config -> base -> person -> bool
+val image_file_name : string -> string
+val source_image_file_name : string -> string -> string
 
-value image_size : string -> option (int * int);
-value limited_image_size : int -> int -> string -> option (int * int)
-  -> option (int * int);
-value image_and_size :
+val image_size : string -> (int * int) option
+val limited_image_size :
+  int -> int -> string -> (int * int) option -> (int * int) option
+val image_and_size :
   config -> base -> person ->
-  (string -> option (int * int) -> option (int * int)) ->
-    option (bool * string * option (int * int));
+    (string -> (int * int) option -> (int * int) option) ->
+    (bool * string * (int * int) option) option
 
-value default_image_name_of_key : string -> string -> int -> string;
-value default_image_name : base -> person -> string;
-value auto_image_file : config -> base -> person -> option string;
+val default_image_name_of_key : string -> string -> int -> string
+val default_image_name : base -> person -> string
+val auto_image_file : config -> base -> person -> string option
 
-value only_printable : string -> string;
-value only_printable_or_nl : string -> string;
+val only_printable : string -> string
+val only_printable_or_nl : string -> string
 
-value relation_type_text : config -> relation_type -> int -> string;
-value rchild_type_text : config -> relation_type -> int -> string;
+val relation_type_text : config -> relation_type -> int -> string
+val rchild_type_text : config -> relation_type -> int -> string
 
-value has_nephews_or_nieces : config -> base -> person -> bool;
+val has_nephews_or_nieces : config -> base -> person -> bool
 
-value browser_doesnt_have_tables : config -> bool;
+val browser_doesnt_have_tables : config -> bool
 
-value start_with : string -> int -> string -> bool;
+val start_with : string -> int -> string -> bool
 
-value doctype : config -> string;
+val doctype : config -> string
 
-value begin_centered : config -> unit;
-value end_centered : config -> unit;
+val begin_centered : config -> unit
+val end_centered : config -> unit
 
 (* Printing for browsers without tables *)
 
-value pre_text_size : string -> int;
-value print_pre_center : int -> string -> unit;
-value print_pre_left : int -> string -> unit;
-value print_pre_right : int -> string -> unit;
+val pre_text_size : string -> int
+val print_pre_center : int -> string -> unit
+val print_pre_left : int -> string -> unit
+val print_pre_right : int -> string -> unit
 
-value short_f_month : int -> string;
+val short_f_month : int -> string
 
-value get_compilation_time : unit -> string;
-value set_compilation_time : string -> unit;
-value get_commit : unit -> string;
-value set_commit : string -> unit;
-value get_commit_date : unit -> string;
-value set_commit_date : string -> unit;
+val get_compilation_time : unit -> string
+val set_compilation_time : string -> unit
+val get_commit : unit -> string
+val set_commit : string -> unit
+val get_commit_date : unit -> string
+val set_commit_date : string -> unit
 
 (* Reading password file *)
 
-type auth_user = {au_user : string; au_passwd : string; au_info : string};
+type auth_user = { au_user : string; au_passwd : string; au_info : string }
 
-value read_gen_auth_file : string -> list auth_user;
+val read_gen_auth_file : string -> auth_user list
 
-value is_that_user_and_password :
-  auth_scheme_kind -> string -> string -> bool;
+val is_that_user_and_password : auth_scheme_kind -> string -> string -> bool
 
 (* Searching *)
 
-value in_text : bool -> string -> string -> bool;
-value html_highlight : bool -> string -> string -> string;
+val in_text : bool -> string -> string -> bool
+val html_highlight : bool -> string -> string -> string
 
 (* Pretty print XHTML wrapper for Wserver.wrap_string *)
 
-value xml_pretty_print : string -> string;
+val xml_pretty_print : string -> string
 
 (* Print list in columns with alphabetic order *)
 
-value wprint_in_columns :
-  config -> ('a -> string) -> ('a -> unit) -> list 'a -> unit;
+val wprint_in_columns :
+  config -> ('a -> string) -> ('a -> unit) -> 'a list -> unit
 
 (* Variable that use also private flag of person *)
-value is_hide_names : config -> person -> bool;
+val is_hide_names : config -> person -> bool
 
-value reduce_list : int -> list 'a -> list 'a;
+val reduce_list : int -> 'a list -> 'a list
 
-value print_reference : config -> string -> int -> string -> unit;
+val print_reference : config -> string -> int -> string -> unit
 
-value gen_print_tips : config -> string -> unit;
-value print_tips_relationship : config -> unit;
+val gen_print_tips : config -> string -> unit
+val print_tips_relationship : config -> unit
 
-value print_image_sex : config -> person -> int -> unit;
+val print_image_sex : config -> person -> int -> unit
 
-value display_options : config -> string;
+val display_options : config -> string
 
-type cache_visited_t = Hashtbl.t string (list (iper * string));
-value cache_visited : config -> string;
-value read_visited : config -> cache_visited_t;
-value record_visited : config -> iper -> unit;
+type cache_visited_t = (string, (iper * string) list) Hashtbl.t
+val cache_visited : config -> string
+val read_visited : config -> cache_visited_t
+val record_visited : config -> iper -> unit
 
-type cache_info_t = Hashtbl.t string string;
+type cache_info_t = (string, string) Hashtbl.t
 
 (* valeur dans le cache. *)
-value cache_nb_base_persons : string;
+val cache_nb_base_persons : string
 
-value cache_info : config -> string;
-value read_cache_info : config -> cache_info_t;
-value patch_cache_info : config -> string -> (string -> string) -> unit;
+val cache_info : config -> string
+val read_cache_info : config -> cache_info_t
+val patch_cache_info : config -> string -> (string -> string) -> unit
 
-value real_nb_of_persons : config -> base -> int;
+val real_nb_of_persons : config -> base -> int

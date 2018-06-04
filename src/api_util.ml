@@ -1,4 +1,3 @@
-(* nocamlp5 *)
 
 module M = Api_piqi
 module Mext = Api_piqi_ext

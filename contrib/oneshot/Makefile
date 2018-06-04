@@ -6,3 +6,9 @@ EVERYTHING_EXE := gwFixAddEvent gwMostAsc
 LIBS = unix
 
 include $(ROOT)/tools/Makefile.common
+
+gwFixAddEvent.ml: $(ROOT)/src/pa_lock.cmo
+
+gwFixAddEvent.ml: CAMLP5 = camlp5r $(ROOT)/src/pa_lock.cmo
+
+depend .depend: gwFixAddEvent.ml

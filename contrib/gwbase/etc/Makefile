@@ -11,3 +11,6 @@ probot.opt probot.out: LINKFLAGS += -I $(CAMLP5D)
 probot_PREPEND_OBJS := $(ROOT)/src/gwlib
 
 include $(ROOT)/tools/Makefile.common
+
+gwck.ml: ../../../src/pa_lock.cmo
+gwck.ml: CAMLP5 = camlp5o ../../../src/pa_lock.cmo

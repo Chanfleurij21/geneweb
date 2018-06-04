@@ -1,33 +1,196 @@
-ROOT := .
-
-include $(ROOT)/tools/Makefile.common
+include tools/Makefile.config
 -include $(ROOT)/Makefile.local
 
-# ALL: directories needed to make distribution
-ALL_TARGETS := wserver dag2html src ged2gwb gwb2ged setup gwtp
-# EVERYTHING: any other maintained project
-EVERYTHING_TARGETS := gui contrib/gwpublic contrib/oneshot contrib/misc contrib/gwFix contrib/history contrib/gwdiff contrib/gwbase/etc contrib/lex
+INCDIRS=src wserver
 
-suffixed_TARGETS := $(foreach suffix,all clean depend everything opt out,$(ALL_TARGETS:=?$(suffix)) $(EVERYTHING_TARGETS:=?$(suffix)) tools?$(suffix))
+OCAMLI=$(foreach d,$(INCDIRS),-I $d) -I $(CAMLP5D)
+OCAMLC=$(OCAMLC_PATH) $(OCAMLFLAGS)
+OCAMLOPT=$(OCAMLOPT_PATH) $(OCAMLFLAGS)
+OCAML_opt_LINK=$(OCAMLOPT) $(LINKSTATIC_opt)
+OCAML_out_LINK=$(OCAMLC) $(LINKSTATIC_out)
 
-.PHONY: $(suffixed_TARGETS)
+ALL_EXE = \
+	src/gwc1 \
+	src/gwc2 \
+	src/mk_consang \
+	src/gwd \
+	src/gwu \
+	src/update_nldb \
+	ged2gwb/ged2gwb \
+	ged2gwb/ged2gwb2 \
+	gwb2ged/gwb2ged \
+	gwtp/gwtp \
+	gui/gui \
+	contrib/gwpublic/gwpublic1 \
+	contrib/gwpublic/gwpublic2 \
+	contrib/gwpublic/gwpublic2priv \
+	contrib/gwpublic/gwprivate \
+	contrib/gwpublic/gwiftitles \
+	contrib/gwFix/gwFixBase \
+	contrib/gwFix/gwFixFromFile \
+	contrib/gwFix/gwFixFromFileDomicile \
+	contrib/gwFix/gwFixFromFileAlias \
+	contrib/gwFix/gwFixBurial \
+	contrib/gwFix/gwFixEvtSrc \
+	contrib/gwFix/gwFixColon \
+	contrib/gwFix/gwFindCpl \
+	contrib/gwFix/gwFixY \
+	contrib/gwdiff/gwdiff \
+	contrib/gwbase/etc/public \
+	contrib/gwbase/etc/public2 \
+	contrib/history/convert_hist \
+	contrib/history/fix_hist \
+	contrib/history/is_gw_plus \
+	contrib/lex/lex_utils \
+	contrib/misc/lower_string \
+	contrib/oneshot/gwRemoveImgGallery \
+	contrib/oneshot/gwBaseCompatiblePlus \
+	contrib/oneshot/gwFixDateText \
+	contrib/oneshot/gwExportAscCSV
 
-all depend everything opt out: $(DEPEND_DEPEND)
-all: $(ALL_TARGETS:=?all)
-clean: $(ALL_TARGETS:=?clean) $(EVERYTHING_TARGETS:=?clean) tools?clean
-depend: $(ALL_TARGETS:=?depend)
-everything: $(ALL_TARGETS:=?everything) $(EVERYTHING_TARGETS:=?everything)
-opt: $(ALL_TARGETS:=?opt)
-out: $(ALL_TARGETS:=?out)
+EVERYTHING_EXE = \
+	$(ALL_EXE) \
+	contrib/gwbase/etc/geneanet \
+	contrib/gwbase/etc/clavier \
+	contrib/gwbase/etc/connex \
+	contrib/gwbase/etc/hist \
+	contrib/gwbase/etc/selroy \
+	contrib/gwbase/etc/chkimg \
+	contrib/gwbase/etc/consmoy \
+	contrib/gwbase/etc/lune \
+	contrib/gwbase/etc/titres \
+	contrib/gwbase/etc/gwck \
+	contrib/gwbase/etc/nbdesc \
+	contrib/gwbase/etc/probot \
+	contrib/oneshot/gwFixAddEvent \
+	contrib/oneshot/gwMostAsc \
+	dag2html/main \
+	gwtp/recover \
+	src/check_base
 
-$(suffixed_TARGETS):
-	$(MAKE) -C $(firstword $(subst ?, ,$@)) $(lastword $(subst ?, ,$@))
+opt: $(ALL_EXE:=.native)
+out: $(ALL_EXE:=.byte)
 
-clean: clean-tmp
-	$(RM) -r $(DESTDIR)
+CAMLP5_PA_HTML_FILES = \
+	src/advSearchOk \
+	src/alln \
+	src/api_wiki \
+	src/birthday \
+	src/birthDeath \
+	src/changeChildren \
+	src/cousins \
+	src/dag \
+	src/descend \
+	src/history_diff \
+	src/hutil \
+	src/merge \
+	src/mergeInd \
+	src/mergeDup \
+	src/mergeFam \
+	src/notes \
+	src/relation \
+	src/relationLink \
+	src/sendImage \
+	src/some \
+	src/title \
+	src/update \
+	src/updateData \
+	src/updateInd \
+	src/wiki \
+	src/wiznotes \
+	src/gwd
 
-$(DEPEND_DEPEND):
-	$(MAKE) -C $(dir $@) $(notdir $@)
+CAMLP5_PA_EXTAND_FILES = \
+	src/templ \
+	src/pa_lock \
+	src/pa_html \
+	src/pr_transl \
+	ged2gwb/ged2gwb \
+	ged2gwb/ged2gwb2 \
+	wserver/wserver
+
+CAMLP5_PA_LOCK_FILES = \
+	src/mk_consang \
+	src/gwc1 \
+	src/gwc2 \
+	src/gwd \
+	src/srcfile \
+	src/api_saisie_autocomplete \
+	ged2gwb/ged2gwb \
+	ged2gwb/ged2gwb2 \
+	gwtp/gwtp \
+	contrib/gwpublic/gwpublic1 \
+	contrib/gwpublic/gwpublic2 \
+	contrib/gwpublic/gwpublic2priv \
+	contrib/gwpublic/gwprivate \
+	contrib/gwpublic/gwiftitles \
+	contrib/gwbase/etc/gwck \
+	contrib/oneshot/gwFixAddEvent
+
+CAMLP5_Q_MLAST_FILES = \
+	src/templ \
+	src/pa_lock \
+	src/pa_html \
+	src/pr_transl \
+	src/gwd
+
+CAMLP5_PA_MACRO_FILES = src/gwd
+
+CAMLP5_FILES = $(sort $(CAMLP5_PA_HTML_FILES) $(CAMLP5_PA_LOCK_FILES) $(CAMLP5_Q_MLAST_FILES) $(CAMLP5_PA_MACRO_FILES) $(CAMLP5_PA_EXTAND_FILES))
+
+src/q_codes.cm% src/pa_lock.cm% src/pa_html.cm% src/gwd.cm% src/pr_transl.cm%: PP = -I $(CAMLP5D)
+
+$(CAMLP5_PA_HTML_FILES:=.ml): CAMLP5_OPT += src/pa_html.cmo
+$(CAMLP5_PA_LOCK_FILES:=.ml): CAMLP5_OPT += src/pa_lock.cmo
+$(CAMLP5_PA_EXTAND_FILES:=.ml): CAMLP5_OPT += pa_extend.cmo
+$(CAMLP5_Q_MLAST_FILES:=.ml): CAMLP5_OPT += q_MLast.cmo
+$(CAMLP5_PA_MACRO_FILES:=.ml): CAMLP5_OPT += pa_macro.cmo
+
+$(CAMLP5_PA_LOCK_FILES:=.ml): src/pa_lock.cmo
+$(CAMLP5_PA_HTML_FILES:=.ml): src/pa_html.cmo
+
+%.cmi: %.mli
+	$(OCAMLC) -c $(OCAMLI) $<
+
+%.cmo: %.ml
+	$(OCAMLC) -c $(OCAMLI) $<
+
+%.cmx: %.ml
+	$(OCAMLOPT) -c $(OCAMLI) $<
+
+%.ml: CAMLP5_OPT=
+
+%.ml: %.camlp5
+	@[ -z "$(CAMLP5_OPT)" ] \
+	&& echo "ERROR generating $@: CAMLP5_OPT variable must be defined" \
+	|| (echo -n "Generating $@..." \
+	    && echo "(* DO NOT EDIT *)" > $@ \
+	    && echo "(* This file was generated from $< *)" >> $@ \
+	    && camlp5o pr_o.cmo -I $(CAMLP5D) $(CAMLP5_OPT) -impl $< >> $@ \
+	    && echo " Done!")
+
+compile-ml: $(CAMLP5_FILES:=.camlp5) $(CAMLP5_FILES:=.ml)
+
+clean-ml:
+	$(RM) $(CAMLP5_FILES:=.ml)
+
+clean-cm:
+	$(RM) $(CAMLP5_FILES:=.cm[ioxa])
+
+clean: clean-cm
+
+%.native %.byte:
+	ocamlbuild -use-ocamlfind -r -I +camlp5 -Is wserver,src,dag2html -lib camlp5 -pkgs piqirun.ext,piqirun.ext,redis-sync,yojson,curl,camlp5,str,lablgtk2 -no-links $@
+
+ocamlbuild: $(CAMLP5_FILES:=.ml) src/gwlib.ml clean-cm $(EVERYTHING_EXE:=.native)
+
+ocamlbuild-clean:
+	ocamlbuild -clean
+
+src/gwlib.ml:
+	echo "let prefix =" > $@
+	echo "  try Sys.getenv \"GWPREFIX\"" >> $@
+	echo "  with Not_found -> \"$(PREFIX)\"" | sed -e 's|\\|/|g' >> $@
 
 .PHONY: install uninstall distrib
 

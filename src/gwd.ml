@@ -1867,31 +1867,15 @@ value arg_parse_in_file fname speclist anonfun errmsg =
   | _ -> () ]
 ;
 
-module G =
-  Grammar.GMake
-    (struct type te = (string * string); value lexer = Plexer.gmake (); end)
-;
-value robot_xcl_arg = G.Entry.create "robot_xcl arg";
-GEXTEND G
-  robot_xcl_arg:
-    [ [ cnt = INT; ","; sec = INT; EOI ->
-          (int_of_string cnt, int_of_string sec) ] ]
-  ;
-END;
-
 value robot_exclude_arg s =
   try
-    robot_xcl.val :=
-      Some (G.Entry.parse robot_xcl_arg (G.parsable (Stream.of_string s)))
-  with
-  [ Ploc.Exc _ (Stream.Error _ | Token.Error _) ->
-      do {
-        eprintf "Bad use of option -robot_xcl\n";
-        eprintf "Use option -help for usage.\n";
-        flush Pervasives.stderr;
-        exit 2
-      } ]
-;
+    robot_xcl := Scanf.sscanf s "%d,%d" (fun cnt sec -> Some (cnt, sec))
+  with [ _ -> do {
+    eprintf "Bad use of option -robot_xcl\n";
+    eprintf "Use option -help for usage.\n";
+    flush Pervasives.stderr;
+    exit 2 ;
+  } ] ;
 
 value slashify s =
   String.init (String.length s) conv_char

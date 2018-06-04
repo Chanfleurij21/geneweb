@@ -1,50 +1,49 @@
 (* $Id: checkItem.mli,v 1.12 2007-09-05 13:19:25 ddr Exp $ *)
 (* Copyright (c) 2006-2007 INRIA *)
 
-open Gwdb;
+open Gwdb
 
-type base_error = Def.error person;
-type base_warning = Def.warning person family title pers_event fam_event;
-type base_misc = Def.misc person family title;
+type base_error = person Def.error
+type base_warning = (person, family, title, pers_event, fam_event) Def.warning
+type base_misc = (person, family, title) Def.misc
 
-value leap_year : int -> bool;
-value nb_days_in_month : int -> int -> int;
-value time_elapsed : Def.dmy -> Def.dmy -> Def.dmy;
-value strictly_before_dmy : Def.dmy -> Def.dmy -> bool;
-value strictly_before : Def.date -> Def.date -> bool;
-value strictly_after_dmy : Def.dmy -> Def.dmy -> bool;
-value strictly_after : Def.date -> Def.date -> bool;
-value date_of_death : Def.death -> option Adef.date;
+val leap_year : int -> bool
+val nb_days_in_month : int -> int -> int
+val time_elapsed : Def.dmy -> Def.dmy -> Def.dmy
+val strictly_before_dmy : Def.dmy -> Def.dmy -> bool
+val strictly_before : Def.date -> Def.date -> bool
+val strictly_after_dmy : Def.dmy -> Def.dmy -> bool
+val strictly_after : Def.date -> Def.date -> bool
+val date_of_death : Def.death -> Adef.date option
 
 
-type event_name 'string =
-  [ Psort of Def.gen_pers_event_name 'string
-  | Fsort of Def.gen_fam_event_name 'string ]
-;
-value sort_events :
-  (('a -> event_name 'string) * ('a -> Adef.codate)) -> list 'a -> list 'a;
+type 'string event_name =
+    Psort of 'string Def.gen_pers_event_name
+  | Fsort of 'string Def.gen_fam_event_name
+val sort_events :
+  ('a -> 'string event_name) * ('a -> Adef.codate) -> 'a list -> 'a list
 
-value merge_events :
-  (('a -> event_name 'string) * ('a -> Adef.codate)) -> list 'a -> list 'a -> list 'a;
+val merge_events :
+  ('a -> 'string event_name) * ('a -> Adef.codate) -> 'a list -> 'a list ->
+    'a list
 
-value person :
+val person :
   base -> (base_warning -> unit) -> person ->
-    option
-      (list (Adef.iper * person * option Def.sex * option (list relation)));
+    (Adef.iper * person * Def.sex option * relation list option) list option
 
-value family :
+val family :
   base -> (base_error -> unit) -> (base_warning -> unit) -> Def.ifam ->
-    family -> unit;
+    family -> unit
 
-value reduce_family :
+val reduce_family :
   base -> (base_error -> unit) -> (base_warning -> unit) -> Def.ifam ->
-    family -> unit;
+    family -> unit
 
-value sort_children :
-  base -> array Adef.iper -> option (array Adef.iper * array Adef.iper);
+val sort_children :
+  base -> Adef.iper array -> (Adef.iper array * Adef.iper array) option
 
-value check_other_fields :
-  base -> (base_misc -> unit) -> Def.ifam -> family -> unit;
+val check_other_fields :
+  base -> (base_misc -> unit) -> Def.ifam -> family -> unit
 
-value list_uniq : list 'a -> list 'a;
-value stable_list_uniq : list 'a -> list 'a;
+val list_uniq : 'a list -> 'a list
+val stable_list_uniq : 'a list -> 'a list

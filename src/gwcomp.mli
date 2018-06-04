@@ -1,38 +1,37 @@
 (* $Id: gwcomp.mli,v 5.1 2008-01-12 08:41:18 ddr Exp $ *)
 (* Copyright (c) 2007-2008 INRIA *)
 
-open Def;
+open Def
 
-type key = { pk_first_name : string; pk_surname : string; pk_occ : int };
+type key = { pk_first_name : string; pk_surname : string; pk_occ : int }
 type somebody =
-  [ Undefined of key
-  | Defined of gen_person iper string ]
-;
+    Undefined of key
+  | Defined of (iper, string) gen_person
 
 type gw_syntax =
-  [ Family of
-      gen_couple somebody and sex and sex and
-        list (somebody * sex) and
-        list (gen_fam_event_name string * codate * string * string * 
-                string * string * list (somebody * sex * witness_kind)) and
-        gen_family (gen_person iper string) string and
-        gen_descend (gen_person iper string)
-  | Notes of key and string
-  | Relations of somebody and sex and list (gen_relation somebody string)
-  | Pevent of 
-      somebody and sex and 
-        list (gen_pers_event_name string * codate * string * 
-                string * string * string * list (somebody * sex * witness_kind))
-  | Bnotes of string and string
-  | Wnotes of string and string ]
-;
+    Family of
+      somebody gen_couple * sex * sex * (somebody * sex) list *
+        (string gen_fam_event_name * codate * string * string * string *
+           string * (somebody * sex * witness_kind) list)
+          list *
+        ((iper, string) gen_person, string) gen_family *
+        (iper, string) gen_person gen_descend
+  | Notes of key * string
+  | Relations of somebody * sex * (somebody, string) gen_relation list
+  | Pevent of
+      somebody * sex *
+        (string gen_pers_event_name * codate * string * string * string *
+           string * (somebody * sex * witness_kind) list)
+          list
+  | Bnotes of string * string
+  | Wnotes of string * string
 
-value magic_gwo : string;
-value line_cnt : ref int;
-value no_fail : ref bool;
-value comp_families : string -> unit;
-value no_picture : ref bool;
-value create_all_keys : ref bool;
+val magic_gwo : string
+val line_cnt : int ref
+val no_fail : bool ref
+val comp_families : string -> unit
+val no_picture : bool ref
+val create_all_keys : bool ref
 
 (* Ajout pour l'API *)
-value date_of_string : string -> int -> option date;
+val date_of_string : string -> int -> date option

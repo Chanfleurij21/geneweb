@@ -1,12 +1,12 @@
 (* $Id: ansel.ml,v 5.3 2007-01-19 01:53:16 ddr Exp $ *)
 (* Copyright (c) 1998-2007 INRIA *)
 
-value iso_8859_1_unknown = '\129';
-value ansel_unknown = 129;
+let iso_8859_1_unknown = '\129'
+let ansel_unknown = 129
 
-value no_accent =
-  fun
-  [ '\224'..'\229' -> 'a'
+let no_accent =
+  function
+    '\224'..'\229' -> 'a'
   | '\162' | '\231' -> 'c'
   | '\232'..'\235' -> 'e'
   | '\236'..'\239' -> 'i'
@@ -25,89 +25,94 @@ value no_accent =
   | '\168' | '\176' | '\180' | '\184' | '\186' -> ' '
   | '\171' -> '<'
   | '\187' -> '>'
-  | c -> c ]
-;
+  | c -> c
 
-value accent_code = (* and 1-to-1 conversions *)
-  fun
-    [ '\192' | '\200' | '\204' | '\210' | '\217'
-    | '\224' | '\232' | '\236' | '\242' | '\249' -> 225 (* grave *)
-    | '\193' | '\201' | '\205' | '\211' | '\218' | '\221' | '\180'
-    | '\225' | '\233' | '\237' | '\243' | '\250' | '\253' -> 226 (* acute *)
-    | '\194' | '\202' | '\206' | '\212' | '\219'
-    | '\226' | '\234' | '\238' | '\244' | '\251' -> 227 (* circum *)
-    | '\195' | '\209' | '\213' | '\227' | '\241' | '\245' -> 228 (* tilde *)
-    | '\196' | '\203' | '\207' | '\214' | '\220' | '\168'
-    | '\228' | '\235' | '\239' | '\246' | '\252' | '\255' -> 232 (* uml *)
-    | '\197' | '\229' | '\176' | '\186' -> 234 (* circle *)
-    | '\199' | '\231' | '\184' -> 240 (* cedil *)
-    | '\161' -> 198 (* rev ! *)
-    | '\162' -> 252 (* /c *)
-    | '\163' -> 185 (* pound *)
-    | '\164' -> 0x6f
-    | '\165' -> 0x59 (* yen *)
-    | '\166' -> 0x7c
-    | '\169' -> 195 (* (C) *)
-    | '\170' -> 0x61
-    | '\171' -> 0x3c (* << *)
-    | '\173' -> 0x2d
-    | '\174' -> 170 (* (R) *)
-    | '\177' -> 171 (* +- *)
-    | '\178' -> 0x32
-    | '\179' -> 0x33
-    | '\183' -> 168 (* . *)
-    | '\185' -> 0x31
-    | '\187' -> 0x3e (* >> *)
-    | '\191' -> 197
-    | '\198' -> 165 (* AE *)
-    | '\230' -> 181
-    | '\208' -> 163 (* -D *)
-    | '\240' -> 179
-    | '\216' -> 162 (* /O *)
-    | '\248' -> 178
-    | '\222' -> 164 (* |b *)
-    | '\254' -> 180
-    | '\223' -> 207 (* es zet *)
-    | c when c >= '\161' -> ansel_unknown
-    | _ -> 0 ]
-;
+let accent_code =
+  (* and 1-to-1 conversions *)
+  function
+    '\192' | '\200' | '\204' | '\210' | '\217' | '\224' | '\232' | '\236' |
+    '\242' | '\249' ->
+      225
+  | '\193' | '\201' | '\205' | '\211' | '\218' | '\221' | '\180' | '\225' |
+    '\233' | '\237' | '\243' | '\250' | '\253' ->
+      226
+  | '\194' | '\202' | '\206' | '\212' | '\219' | '\226' | '\234' | '\238' |
+    '\244' | '\251' ->
+      227
+  | '\195' | '\209' | '\213' | '\227' | '\241' | '\245' -> 228
+  | '\196' | '\203' | '\207' | '\214' | '\220' | '\168' | '\228' | '\235' |
+    '\239' | '\246' | '\252' | '\255' ->
+      232
+  | '\197' | '\229' | '\176' | '\186' -> 234
+  | '\199' | '\231' | '\184' -> 240
+  | '\161' -> 198
+  | '\162' -> 252
+  | '\163' -> 185
+  | '\164' -> 0x6f
+  | '\165' -> 0x59
+  | '\166' -> 0x7c
+  | '\169' -> 195
+  | '\170' -> 0x61
+  | '\171' -> 0x3c
+  | '\173' -> 0x2d
+  | '\174' -> 170
+  | '\177' -> 171
+  | '\178' -> 0x32
+  | '\179' -> 0x33
+  | '\183' -> 168
+  | '\185' -> 0x31
+  | '\187' -> 0x3e
+  | '\191' -> 197
+  | '\198' -> 165
+  | '\230' -> 181
+  | '\208' -> 163
+  | '\240' -> 179
+  | '\216' -> 162
+  | '\248' -> 178
+  | '\222' -> 164
+  | '\254' -> 180
+  | '\223' -> 207
+  | c when c >= '\161' -> ansel_unknown
+  | _ -> 0
 
-value of_iso_8859_1 s =
+let of_iso_8859_1 s =
   let (len, identical) =
-    loop 0 0 True where rec loop i len identical =
-      if i = String.length s then (len, identical)
+    let rec loop i len identical =
+      if i = String.length s then len, identical
       else
         let a = accent_code s.[i] in
-        if a = 0 then
-          loop (i + 1) (len + 1) identical
+        if a = 0 then loop (i + 1) (len + 1) identical
         else
           let n = no_accent s.[i] in
-          if n = s.[i] then
-            loop (i + 1) (len + 1) False
-          else
-            loop (i + 1) (len + 2) False
+          if n = s.[i] then loop (i + 1) (len + 1) false
+          else loop (i + 1) (len + 2) false
+    in
+    loop 0 0 true
   in
   if identical then s
   else
     let s' = Bytes.create len in
-    loop 0 0 where rec loop i i' =
+    let rec loop i i' =
       if i = String.length s then Bytes.unsafe_to_string s'
       else
         let i' =
           let a = accent_code s.[i] in
-          if a > 0 then do {
-            Bytes.set s' i' (Char.chr a);
-            let n = no_accent s.[i] in
-            if n = s.[i] then i'
-            else do { Bytes.set s' (i'+1) n; i'+1 }
-          } else do { Bytes.set s' i' s.[i]; i' } 
+          if a > 0 then
+            begin
+              Bytes.set s' i' (Char.chr a);
+              let n = no_accent s.[i] in
+              if n = s.[i] then i'
+              else begin Bytes.set s' (i' + 1) n; i' + 1 end
+            end
+          else begin Bytes.set s' i' s.[i]; i' end
         in
         loop (i + 1) (i' + 1)
-;
+    in
+    loop 0 0
 
-value grave =
-  fun
-  [ 'a' -> '\224'
+let grave =
+  function
+    'a' -> '\224'
   | 'e' -> '\232'
   | 'i' -> '\236'
   | 'o' -> '\242'
@@ -118,12 +123,11 @@ value grave =
   | 'O' -> '\210'
   | 'U' -> '\217'
   | ' ' -> '`'
-  | x -> x ]
-;
+  | x -> x
 
-value acute =
-  fun
-  [ 'a' -> '\225'
+let acute =
+  function
+    'a' -> '\225'
   | 'e' -> '\233'
   | 'i' -> '\237'
   | 'o' -> '\243'
@@ -136,12 +140,11 @@ value acute =
   | 'U' -> '\218'
   | 'Y' -> '\221'
   | ' ' -> '\180'
-  | x -> x ]
-;
+  | x -> x
 
-value circum =
-  fun
-  [ 'a' -> '\226'
+let circum =
+  function
+    'a' -> '\226'
   | 'e' -> '\234'
   | 'i' -> '\238'
   | 'o' -> '\244'
@@ -152,12 +155,11 @@ value circum =
   | 'O' -> '\212'
   | 'U' -> '\219'
   | ' ' -> '^'
-  | x -> x ]
-;
+  | x -> x
 
-value uml =
-  fun
-  [ 'a' -> '\228'
+let uml =
+  function
+    'a' -> '\228'
   | 'e' -> '\235'
   | 'i' -> '\239'
   | 'o' -> '\246'
@@ -169,122 +171,124 @@ value uml =
   | 'O' -> '\214'
   | 'U' -> '\220'
   | ' ' -> '\168'
-  | x -> x ]
-;
+  | x -> x
 
-value circle =
-  fun
-  [ 'a' -> '\229'
+let circle =
+  function
+    'a' -> '\229'
   | 'A' -> '\197'
   | ' ' -> '\176'
-  | x -> x ]
-;
+  | x -> x
 
-value tilde =
-  fun
-  [ 'a' -> '\227'
+let tilde =
+  function
+    'a' -> '\227'
   | 'n' -> '\241'
   | 'o' -> '\245'
   | 'A' -> '\195'
   | 'N' -> '\209'
   | 'O' -> '\213'
   | ' ' -> '~'
-  | x -> x ]
-;
+  | x -> x
 
-value cedil =
-  fun
-  [ 'c' -> '\231'
+let cedil =
+  function
+    'c' -> '\231'
   | 'C' -> '\199'
   | ' ' -> '\184'
-  | x -> x ]
-;
+  | x -> x
 
-value slash =
-  fun
-  [ 'C' | 'c' -> '\162'
+let slash =
+  function
+    'C' | 'c' -> '\162'
   | 'O' -> '\216'
   | 'o' -> '\248'
   | ' ' -> '/'
-  | x -> x ]
-;
+  | x -> x
 
-value to_iso_8859_1 s =
+let to_iso_8859_1 s =
   let (len, identical) =
-    loop 0 0 True where rec loop i len identical =
-      if i = String.length s then (len, identical)
-      else if i = String.length s - 1 then (len + 1, identical)
+    let rec loop i len identical =
+      if i = String.length s then len, identical
+      else if i = String.length s - 1 then len + 1, identical
       else
         match Char.code s.[i] with
-        [ 166 | 172 | 173 | 182 | 188 | 189 -> loop (i + 1) (len + 2) False
-        | c when c >= 224 -> loop (i + 2) (len + 1) False
-        | c when c >= 161 -> loop (i + 1) (len + 1) False
-        | _ -> loop (i + 1) (len + 1) identical]
+          166 | 172 | 173 | 182 | 188 | 189 -> loop (i + 1) (len + 2) false
+        | c when c >= 224 -> loop (i + 2) (len + 1) false
+        | c when c >= 161 -> loop (i + 1) (len + 1) false
+        | _ -> loop (i + 1) (len + 1) identical
+    in
+    loop 0 0 true
   in
   if identical then s
   else
     let s' = Bytes.create len in
-    loop 0 0 where rec loop i i' =
+    let rec loop i i' =
       if i = String.length s then Bytes.unsafe_to_string s'
       else
         match Char.code s.[i] with
-        [ (166 | 172 | 173 | 182 | 188 | 189) as c ->
-          let (c', c'') = match c with
-            [ 166 -> ('O', 'E')
-            | 172 -> ('O', '\180')
-            | 173 -> ('U', '\180')
-            | 182 -> ('o', 'e')
-            | 188 -> ('o', '\180')
-            | 189 -> ('u', '\180')
-            | _ -> (iso_8859_1_unknown, iso_8859_1_unknown) ] in do {
-          Bytes.set s' i' c';
-          Bytes.set s' (i' + 1) c'';
-          loop (i + 1) (i' + 2) }
+          166 | 172 | 173 | 182 | 188 | 189 as c ->
+            let (c', c'') =
+              match c with
+                166 -> 'O', 'E'
+              | 172 -> 'O', '\180'
+              | 173 -> 'U', '\180'
+              | 182 -> 'o', 'e'
+              | 188 -> 'o', '\180'
+              | 189 -> 'u', '\180'
+              | _ -> iso_8859_1_unknown, iso_8859_1_unknown
+            in
+            Bytes.set s' i' c';
+            Bytes.set s' (i' + 1) c'';
+            loop (i + 1) (i' + 2)
         | c when c >= 224 ->
-          let c' = s.[i+1] in
-          let c' = match c with
-            [ 224 | 226 | 235 | 237 | 254 -> acute c'
-            | 225 | 236 -> grave c'
-            | 227 | 250 -> circum c'
-            | 228 | 230 | 233 -> tilde c'
-            | 232 | 238 -> uml c'
-            | 231 | 234 -> circle c'
-            | 240 | 241 | 242 | 243 | 244 | 247 | 248 | 249 -> cedil c'
-            | 252 -> slash c'
-            | _ -> c' ] in do {
-          Bytes.set s' i' c';
-          loop (i + 2) (i' + 1) }
+            let c' = s.[i+1] in
+            let c' =
+              match c with
+                224 | 226 | 235 | 237 | 254 -> acute c'
+              | 225 | 236 -> grave c'
+              | 227 | 250 -> circum c'
+              | 228 | 230 | 233 -> tilde c'
+              | 232 | 238 -> uml c'
+              | 231 | 234 -> circle c'
+              | 240 | 241 | 242 | 243 | 244 | 247 | 248 | 249 -> cedil c'
+              | 252 -> slash c'
+              | _ -> c'
+            in
+            Bytes.set s' i' c'; loop (i + 2) (i' + 1)
         | c ->
-          let c' = match c with
-            [ 161 -> 'L'
-            | 162 -> '\216'
-            | 163 -> '\208'
-            | 164 -> '\222'
-            | 165 -> '\198'
-            | 167 | 174 | 176 -> '\180'
-            | 168 -> '\183'
-            | 169 -> 'b'
-            | 170 -> '\174'
-            | 171 -> '\177'
-            | 177 | 193 -> 'l'
-            | 178 -> '\248'
-            | 179 | 186 -> '\240'
-            | 180 -> '\254'
-            | 181 -> '\230'
-            | 183 -> '"'
-            | 184 -> 'i'
-            | 185 -> '\163'
-            | 190 | 191 -> iso_8859_1_unknown
-            | 192 -> '\176'
-            | 194 -> 'P'
-            | 195 -> '\169'
-            | 196 -> '#'
-            | 197 -> '\191'
-            | 198 -> '\161'
-            | 205 -> '\101'
-            | 206 -> '\111'
-            | 207 -> '\223'
-            | _ -> Char.chr c ] in do {
-          Bytes.set s' i' c';
-          loop (i + 1) (i' + 1) } ]
-  ;
+            let c' =
+              match c with
+                161 -> 'L'
+              | 162 -> '\216'
+              | 163 -> '\208'
+              | 164 -> '\222'
+              | 165 -> '\198'
+              | 167 | 174 | 176 -> '\180'
+              | 168 -> '\183'
+              | 169 -> 'b'
+              | 170 -> '\174'
+              | 171 -> '\177'
+              | 177 | 193 -> 'l'
+              | 178 -> '\248'
+              | 179 | 186 -> '\240'
+              | 180 -> '\254'
+              | 181 -> '\230'
+              | 183 -> '"'
+              | 184 -> 'i'
+              | 185 -> '\163'
+              | 190 | 191 -> iso_8859_1_unknown
+              | 192 -> '\176'
+              | 194 -> 'P'
+              | 195 -> '\169'
+              | 196 -> '#'
+              | 197 -> '\191'
+              | 198 -> '\161'
+              | 205 -> '\101'
+              | 206 -> '\111'
+              | 207 -> '\223'
+              | _ -> Char.chr c
+            in
+            Bytes.set s' i' c'; loop (i + 1) (i' + 1)
+    in
+    loop 0 0

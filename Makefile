@@ -71,83 +71,30 @@ EVERYTHING_EXE = \
 opt: $(ALL_EXE:=.native)
 out: $(ALL_EXE:=.byte)
 
-CAMLP5_PA_HTML_FILES = \
-	src/advSearchOk \
-	src/alln \
-	src/api_wiki \
-	src/birthday \
-	src/birthDeath \
-	src/changeChildren \
-	src/cousins \
-	src/dag \
-	src/descend \
-	src/history_diff \
-	src/hutil \
-	src/merge \
-	src/mergeInd \
-	src/mergeDup \
-	src/mergeFam \
-	src/notes \
-	src/relation \
-	src/relationLink \
-	src/sendImage \
-	src/some \
-	src/title \
-	src/update \
-	src/updateData \
-	src/updateInd \
-	src/wiki \
-	src/wiznotes \
-	src/gwd
-
 CAMLP5_PA_EXTAND_FILES = \
-	src/templ \
-	src/pa_lock \
-	src/pa_html \
-	src/pr_transl \
 	ged2gwb/ged2gwb \
 	ged2gwb/ged2gwb2 \
+	src/pr_transl \
+	src/templ \
+	src/update \
 	wserver/wserver
 
-CAMLP5_PA_LOCK_FILES = \
-	src/mk_consang \
-	src/gwc1 \
-	src/gwc2 \
-	src/gwd \
-	src/srcfile \
-	src/api_saisie_autocomplete \
-	ged2gwb/ged2gwb \
-	ged2gwb/ged2gwb2 \
-	gwtp/gwtp \
-	contrib/gwpublic/gwpublic1 \
-	contrib/gwpublic/gwpublic2 \
-	contrib/gwpublic/gwpublic2priv \
-	contrib/gwpublic/gwprivate \
-	contrib/gwpublic/gwiftitles \
-	contrib/gwbase/etc/gwck \
-	contrib/oneshot/gwFixAddEvent
-
 CAMLP5_Q_MLAST_FILES = \
-	src/templ \
-	src/pa_lock \
-	src/pa_html \
 	src/pr_transl \
-	src/gwd
+	src/templ
 
-CAMLP5_PA_MACRO_FILES = src/gwd
+CAMLP5R_FILES = src/pr_transl wserver/wserver
+CAMLP5O_FILES = ged2gwb/ged2gwb ged2gwb/ged2gwb2 src/templ src/update
 
-CAMLP5_FILES = $(sort $(CAMLP5_PA_HTML_FILES) $(CAMLP5_PA_LOCK_FILES) $(CAMLP5_Q_MLAST_FILES) $(CAMLP5_PA_MACRO_FILES) $(CAMLP5_PA_EXTAND_FILES))
+$(CAMLP5R_FILES:=.ml): CAMLP5 = camlp5r
+$(CAMLP5O_FILES:=.ml): CAMLP5 = camlp5o
 
-src/q_codes.cm% src/pa_lock.cm% src/pa_html.cm% src/gwd.cm% src/pr_transl.cm%: PP = -I $(CAMLP5D)
+CAMLP5_FILES = $(sort $(CAMLP5_Q_MLAST_FILES) $(CAMLP5_PA_EXTAND_FILES))
 
-$(CAMLP5_PA_HTML_FILES:=.ml): CAMLP5_OPT += src/pa_html.cmo
-$(CAMLP5_PA_LOCK_FILES:=.ml): CAMLP5_OPT += src/pa_lock.cmo
+src/pr_transl.cm%: PP = -I $(CAMLP5D)
+
 $(CAMLP5_PA_EXTAND_FILES:=.ml): CAMLP5_OPT += pa_extend.cmo
 $(CAMLP5_Q_MLAST_FILES:=.ml): CAMLP5_OPT += q_MLast.cmo
-$(CAMLP5_PA_MACRO_FILES:=.ml): CAMLP5_OPT += pa_macro.cmo
-
-$(CAMLP5_PA_LOCK_FILES:=.ml): src/pa_lock.cmo
-$(CAMLP5_PA_HTML_FILES:=.ml): src/pa_html.cmo
 
 %.cmi: %.mli
 	$(OCAMLC) -c $(OCAMLI) $<
@@ -159,14 +106,18 @@ $(CAMLP5_PA_HTML_FILES:=.ml): src/pa_html.cmo
 	$(OCAMLOPT) -c $(OCAMLI) $<
 
 %.ml: CAMLP5_OPT=
+%.ml: CAMLP5=
 
 %.ml: %.camlp5
-	@[ -z "$(CAMLP5_OPT)" ] \
-	&& echo "ERROR generating $@: CAMLP5_OPT variable must be defined" \
+	@([ -z "$(CAMLP5_OPT)" ] \
+	|| false \
+	&& echo "ERROR generating $@: CAMLP5_OPT variable must be defined") \
+	|| ([ -z "$(CAMLP5)" ] \
+	&& echo "ERROR generating $@: CAMLP5 variable must be defined") \
 	|| (echo -n "Generating $@..." \
 	    && echo "(* DO NOT EDIT *)" > $@ \
 	    && echo "(* This file was generated from $< *)" >> $@ \
-	    && camlp5o pr_o.cmo -I $(CAMLP5D) $(CAMLP5_OPT) -impl $< >> $@ \
+	    && $(CAMLP5) pr_o.cmo -I $(CAMLP5D) $(CAMLP5_OPT) -impl $< >> $@ \
 	    && echo " Done!")
 
 compile-ml: $(CAMLP5_FILES:=.camlp5) $(CAMLP5_FILES:=.ml)

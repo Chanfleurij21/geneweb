@@ -3786,12 +3786,14 @@ The database \"%s\" already exists. Use option -f to overwrite it.
   let arrays = make_subarrays arrays in
   let base = make_base arrays bdir in
   finish_base base arrays;
-  begin lock (Mutil.lock_file !out_file) with
-    Accept ->
-      Outbase.output !out_file base;
-      output_command_line !out_file;
-      init_cache_info !out_file base arrays
-  | Refuse -> printf "Base is locked: cannot write it\n"; flush stdout; exit 2
+  begin match Lock.control (Mutil.lock_file !out_file) false
+                (fun () ->
+                   Outbase.output !out_file base;
+                   output_command_line !out_file;
+                   init_cache_info !out_file base arrays)
+    with
+    | Some x -> x
+    | None -> printf "Base is locked: cannot write it\n"; flush stdout; exit 2
   end;
   warning_month_number_dates ();
   if !log_oc != stdout then close_out !log_oc
